@@ -1,6 +1,7 @@
 # P2
 
-## Objetivo: El objetivo de la practica es comprender el funcionamiento de las interrupciones.
+## Objetivo: 
+El objetivo de la practica es comprender el funcionamiento de las interrupciones.
 
 ## Materiales: 
 - ESP32-S1
