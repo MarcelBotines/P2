@@ -6,7 +6,7 @@
 - ESP32-S1
 - GPIO
 
-## Programa
+## Programa A
 
 **Código**
 ```cpp
@@ -48,4 +48,57 @@
             }
     }
 ```
+## Descripción
+Este código permite contar las pulsaciones de un botón físico y enviar esta información a través del puerto serial, además de desvincular la interrupción del botón después de un minuto de inactividad para conservar recursos. 
+
+## Programa B
+
+**Código**
+```cpp
+    #include <Arduino.h>
+
+    volatile int interruptCounter;
+    int totalInterruptCounter;
+    hw_timer_t * timer = NULL;
+    portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
+    void IRAM_ATTR onTimer() {
+        portENTER_CRITICAL_ISR(&timerMux);
+        interruptCounter++;
+        portEXIT_CRITICAL_ISR(&timerMux);
+    }
+    void setup() {
+        Serial.begin(115200);
+        timer = timerBegin(0, 80, true);
+        timerAttachInterrupt(timer, &onTimer, true);
+        timerAlarmWrite(timer, 1000000, true);
+        timerAlarmEnable(timer);
+    }
+    void loop() {
+        if (interruptCounter > 0) {
+        portENTER_CRITICAL(&timerMux);
+        interruptCounter--;
+        portEXIT_CRITICAL(&timerMux);
+        totalInterruptCounter++;
+
+        Serial.print("An interrupt as occurred. Total number: ");
+        Serial.println(totalInterruptCounter);
+        }
+    }
+```
+## Descripción
+Este código implementa un temporizador que genera interrupciones cada segundo, y cada vez que ocurre una interrupción, se incrementa un contador y se imprime el número total de interrupciones en el puerto serial. La sálida se veria usando el print "An interrupt as occurred. Total number: x" así que se vería de esta manera:
+
+```
+    An interrupt as occurred. Total number: 1
+    An interrupt as occurred. Total number: 2
+    An interrupt as occurred. Total number: 3
+    An interrupt as occurred. Total number: 4
+    An interrupt as occurred. Total number: 5
+    etc...
+```
+
+
+
+
+
 
