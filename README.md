@@ -4,7 +4,7 @@
 El objetivo de la practica es comprender el funcionamiento de las interrupciones.
 
 ## Materiales: 
-- ESP32-S1
+- ESP32-S3
 - GPIO
 
 ## Programa A
